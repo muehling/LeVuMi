@@ -617,6 +617,68 @@ class ApplicationController < ActionController::Base
             "neufu" => "I128",
             "scheuno" => "I129",
             "jera" => "I130"
+        },
+        "SEL4" => {
+            "backt" => "I1",
+            "Schere" => "I2",
+            "Während" => "I3",
+            "Büro" => "I4",
+            "spitz" => "I5",
+            "weil" => "I6",
+            "Bilder" => "I7",
+            "böse" => "I8",
+            "bevor" => "I9",
+            "mit" => "I10",
+            "dicke" => "I11",
+            "runde" => "I12",
+            "Blumen" => "I13",
+            "spricht" => "I14",
+            "Durch" => "I15",
+            "Tür" => "I16",
+            "Anstatt" => "I17",
+            "kauft" => "I18",
+            "Vogel" => "I19",
+            "scheint" => "I20",
+            "für" => "I21",
+            "Baby" => "I22",
+            "hungrig" => "I23",
+            "weder" => "I24",
+            "aber" => "I25",
+            "schmeckt" => "I26",
+            "Augen" => "I27",
+            "Wasser" => "I28",
+            "Nachdem" => "I29",
+            "lustigen" => "I30",
+            "schnelle" => "I31",
+            "Schuhe" => "I32",
+            "Auf" => "I33",
+            "neues" => "I34",
+            "Bett" => "I35",
+            "außer" => "I36",
+            "wohne" => "I37",
+            "Haus" => "I38",
+            "von" => "I39",
+            "isst" => "I40",
+            "über" => "I41",
+            "Beine" => "I42",
+            "Freunde" => "I43",
+            "Biene" => "I44",
+            "schläft" => "I45",
+            "süß" => "I46",
+            "wegen" => "I47",
+            "Sonne" => "I48",
+            "Hase" => "I49",
+            "gut" => "I50",
+            "Zwischen" => "I51",
+            "Frösche" => "I52",
+            "wartest" => "I53",
+            "Wenn" => "I54",
+            "sammeln" => "I55",
+            "Sobald" => "I56",
+            "Enten" => "I57",
+            "fleißig" => "I58",
+            "Schwester" => "I59",
+            "unter" => "I60"
         }
     }
 
@@ -626,12 +688,12 @@ class ApplicationController < ActionController::Base
       count = 1
 
       items.each do |i|
-        if (t[1] == 'SW2' && i[2] == 'gerade') || (t[1] == 'SL2a' && (i[2] == 'Ra' ||i[2] == 'ra')) ||
+        if (t[1] == 'SW2' && i[2] == 'gerade') ||(t[1] == 'SEL4' && i[2] == 'In') || (t[1] == 'SL2a' && (i[2] == 'Ra' ||i[2] == 'ra')) ||
             (t[1] == 'SL3' && (i[2] == 'Quä' ||i[2] == 'quä')) || (t[1] == 'SL4' && i[2] == 'tri') || (t[1] == 'PL2a' && i[2] == 'seiei') || (t[1] == 'PL3a' && i[2] == 'eure')||
             (t[1] == 'TS0' && i[2] != 'Fertig') || ((t[1] == 'WSK' || t[1] == 'WS1') && (i[2] == 'Hallo' ||i[2] == 'Erklärung' ||i[2] == 'Löschen und Audio' ||i[2] == 'Hinweis' ||i[2] == 'Beispiel' ||i[2] == 'Beispiele' ||i[2] == 'Ich beginne' ||i[2] == 'Ende')) ||
             (i[2] == 'Preparation') || (i[2] == 'Ende')
         else
-          if t[1] == 'SL2a' || t[1] == 'SL3' || t[1] == 'PL2a' || t[1] == 'PL3a'
+          if t[1] == 'SL2a' || t[1] == 'SL3' || t[1] == 'PL2a' || t[1] == 'PL3a' || t[1] == 'SEL4'
             items_test[i[0]] = {id: lookup_table[t[1]][i[2]], group: i[1], itemtext: i[2]}
           else
             items_test[i[0]] = {id: "I" + count.to_s, group: i[1], itemtext: i[2], zr_only: i[3]}
@@ -900,18 +962,18 @@ class ApplicationController < ActionController::Base
           end
           results = nil
           if r.measurement.assessment.test.shorthand == "SEL6"
-            coherence = '<strong>Anzahl richtig gelöster Items:</strong> '+coh_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+coh_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+coh_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+coh_fal_items
-            complex_structure = '<strong>Anzahl richtig gelöster Items:</strong> '+complex_str_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+complex_str_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+complex_str_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+complex_str_fal_items
-            inferenz = '<strong>Anzahl richtig gelöster Items:</strong> '+inf_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+inf_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+inf_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+inf_fal_items
+            coherence = '<strong>Anzahl richtig gelöster Items:</strong> '+coh_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+coh_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+coh_fal.to_s+'<br/><strong>Falsch gelöste Items:</strong><br/>'+coh_fal_items
+            complex_structure = '<strong>Anzahl richtig gelöster Items:</strong> '+complex_str_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+complex_str_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+complex_str_fal.to_s+'<br/><strong>Falsch gelöste Items:</strong><br/>'+complex_str_fal_items
+            inferenz = '<strong>Anzahl richtig gelöster Items:</strong> '+inf_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+inf_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+inf_fal.to_s+'<br/><strong>Falsch gelöste Items:</strong><br/>'+inf_fal_items
             results = {'V1': sum, 'V2': {'RI':''+sum.to_s + ' von 93', 'KOMS': complex_structure, 'INF': inferenz, 'KO': coherence, 'LG': r.total, 'LGM': "-"},'V3': {'SUM':sum ,'RI':''+sum.to_s + ' von 93', 'KOMS': complex_structure, 'INF': inferenz, 'KO': coherence, 'LG': r.total, 'LGM': "-"} }
           elsif r.measurement.assessment.test.shorthand == "SEL4"
-            ada = '<strong>Anzahl richtig gelöster Items:</strong> '+ada_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+ada_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+ada_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+ada_fal_items
-            avp = '<strong>Anzahl richtig gelöster Items:</strong> '+avp_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+avp_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+avp_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+avp_fal_items
-            avk = '<strong>Anzahl richtig gelöster Items:</strong> '+avk_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+avk_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+avk_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+avk_fal_items
+            ada = '<strong>Anzahl richtig gelöster Items:</strong> '+ada_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+ada_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+ada_fal.to_s+'<br/><strong>Falsch gelöste Items:</strong><br/>'+ada_fal_items
+            avp = '<strong>Anzahl richtig gelöster Items:</strong> '+avp_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+avp_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+avp_fal.to_s+'<br/><strong>Falsch gelöste Items:</strong><br/>'+avp_fal_items
+            avk = '<strong>Anzahl richtig gelöster Items:</strong> '+avk_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+avk_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+avk_fal.to_s+'<br/><strong>Falsch gelöste Items:</strong><br/>'+avk_fal_items
             results = {'V1': sum, 'V2': {'RI':''+sum.to_s + ' von 60', 'ADA': ada, 'AVP': avp, 'AVK': avk, 'LG': r.total, 'LGM': "-"},'V3': {'SUM':sum ,'RI':''+sum.to_s + ' von 60', 'ADA': ada, 'AVP': avp, 'AVK': avk, 'LG': r.total, 'LGM': "-"} }
           elsif r.measurement.assessment.test.shorthand == "SEL2"
-            ada = '<strong>Anzahl richtig gelöster Items:</strong> '+ada_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+ada_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+ada_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+ada_fal_items
-            avp = '<strong>Anzahl richtig gelöster Items:</strong> '+avp_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+avp_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+avp_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+avp_fal_items
+            ada = '<strong>Anzahl richtig gelöster Items:</strong> '+ada_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+ada_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+ada_fal.to_s+'<br/><strong>Falsch gelöste Items:</strong><br/>'+ada_fal_items
+            avp = '<strong>Anzahl richtig gelöster Items:</strong> '+avp_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+avp_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+avp_fal.to_s+'<br/><strong>Falsch gelöste Items:</strong><br/>'+avp_fal_items
             results = {'V1': sum, 'V2': {'RI':''+sum.to_s + ' von 66', 'ADA': ada, 'AVP': avp, 'LG': r.total, 'LGM': "-"},'V3': {'SUM':sum ,'RI':''+sum.to_s + ' von 66', 'ADA': ada, 'AVP': avp, 'LG': r.total, 'LGM': "-"} }
           elsif r.measurement.assessment.test.shorthand == "TS0"
             results = {'V1': 1 }
