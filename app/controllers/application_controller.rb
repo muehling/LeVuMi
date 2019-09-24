@@ -839,20 +839,20 @@ class ApplicationController < ActionController::Base
           r.items.each_with_index do |item, index|
             if !items_test[item].nil?
               if r.extra_data['times'].nil?
-                data += [{item: items_test[item][:id], group: items_test[item][:group]}]
+                data += [{item: items_test[item][:id], group: items_test[item][:group], result: r.responses[index]}]
               else
                 if r.extra_data['answers'].nil?
                   if r.extra_data['times'][index].nil?
-                    data += [{item: items_test[item][:id], group: items_test[item][:group], time: 'NA'}]
+                    data += [{item: items_test[item][:id], group: items_test[item][:group], time: 'NA', result: r.responses[index]}]
                   else
-                    data += [{item: items_test[item][:id], group: items_test[item][:group], time: r.extra_data['times'][index]}]
+                    data += [{item: items_test[item][:id], group: items_test[item][:group], time: r.extra_data['times'][index], result: r.responses[index]}]
                   end
 
                 else
                   if r.extra_data['times'][index].nil?
-                    data += [{item: items_test[item][:id], group: items_test[item][:group], answer: 'NA', time: 'NA'}]
+                    data += [{item: items_test[item][:id], group: items_test[item][:group], answer: 'NA', time: 'NA', result: r.responses[index]}]
                   else
-                    data += [{item: items_test[item][:id], group: items_test[item][:group], answer: r.extra_data['answers'][index] ,time: r.extra_data['times'][index]}]
+                    data += [{item: items_test[item][:id], group: items_test[item][:group], answer: r.extra_data['answers'][index] ,time: r.extra_data['times'][index], result: r.responses[index]}]
                   end
                 end
               end
