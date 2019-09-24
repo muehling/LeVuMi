@@ -759,7 +759,7 @@ class ApplicationController < ActionController::Base
         if (t[1] == 'SW2' && i[2] == 'gerade') ||(t[1] == 'SEL4' && i[2] == 'In') || (t[1] == 'SL2a' && (i[2] == 'Ra' ||i[2] == 'ra')) ||
             (t[1] == 'SL3' && (i[2] == 'Quä' ||i[2] == 'quä')) || (t[1] == 'SL4' && i[2] == 'tri') || (t[1] == 'PL2a' && i[2] == 'seiei') || (t[1] == 'PL3a' && i[2] == 'eure')||
             (t[1] == 'TS0' && i[2] != 'Fertig') || ((t[1] == 'WSK' || t[1] == 'WS1') && (i[2] == 'Hallo' ||i[2] == 'Erklärung' ||i[2] == 'Löschen und Audio' ||i[2] == 'Hinweis' ||i[2] == 'Beispiel' ||i[2] == 'Beispiele' ||i[2] == 'Ich beginne' ||i[2] == 'Ende')) ||
-            (i[2] == 'Preparation') || (i[2] == 'Ende') || (t[1] == 'SEL2' || t[1] == 'SEL4' || t[1] == 'SEL6') && i[2] != 'Hallo'
+            (i[2] == 'Preparation') || (i[2] == 'Ende') || (t[1] == 'SEL2' || t[1] == 'SEL4' || t[1] == 'SEL6') && i[2] == 'Hallo' || (t[1] == 'SEL2' && (i[2] == 'Bein' || i[2] == 'schweren' || i[2] == 'Namen'))
         else
           if t[1] == 'SL2a' || t[1] == 'SL3' || t[1] == 'PL2a' || t[1] == 'PL3a' || t[1] == 'SEL4' || t[1] == 'SEL2'
             items_test[i[0]] = {id: lookup_table[t[1]][i[2]], group: i[1], itemtext: i[2]}
