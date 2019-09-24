@@ -69,14 +69,16 @@
           <% end %>
         </td>
         <td>
-          <%if @user.id == @login_user.id%>
-              <%= link_to edit_user_group_student_path(@user, @group, student), :data => {:remote => true} do %>
-                  <span class="glyphicon glyphicon-pencil"></span>
-              <% end %>
-          <%end%>
-            <%= link_to user_group_student_path(@user, @group, student), :method => :delete, :data => {:remote => true, :confirm => "Sind Sie sicher?"} do %>
-                <span class="glyphicon glyphicon-trash"></span>
+          <% if @user.transferred != true %>
+            <%if @user.id == @login_user.id%>
+                <%= link_to edit_user_group_student_path(@user, @group, student), :data => {:remote => true} do %>
+                    <span class="glyphicon glyphicon-pencil"></span>
+                <% end %>
+            <%end%>
+              <%= link_to user_group_student_path(@user, @group, student), :method => :delete, :data => {:remote => true, :confirm => "Sind Sie sicher?"} do %>
+                  <span class="glyphicon glyphicon-trash"></span>
             <% end %>
+          <% end %>
         </td>
       </tr>
   <% end %>

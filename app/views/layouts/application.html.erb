@@ -8,7 +8,54 @@
   <%= javascript_include_tag "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.33/pdfmake.js"%>
   <%= javascript_include_tag "https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"%>
   <%= csrf_meta_tags %>
+
+  <style>
+    /*Huge thanks to @tobiasahlin at http://tobiasahlin.com/spinkit/ */
+    .spinner {
+      margin: 100px auto 0;
+      width: 70px;
+      text-align: center;
+    }
+
+    .spinner > div {
+      width: 18px;
+      height: 18px;
+      background-color: #333;
+
+      border-radius: 100%;
+      display: inline-block;
+      -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+      animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    }
+
+    .spinner .bounce1 {
+      -webkit-animation-delay: -0.32s;
+      animation-delay: -0.32s;
+    }
+
+    .spinner .bounce2 {
+      -webkit-animation-delay: -0.16s;
+      animation-delay: -0.16s;
+    }
+
+    @-webkit-keyframes sk-bouncedelay {
+      0%, 80%, 100% { -webkit-transform: scale(0) }
+      40% { -webkit-transform: scale(1.0) }
+    }
+
+    @keyframes sk-bouncedelay {
+      0%, 80%, 100% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+      } 40% {
+          -webkit-transform: scale(1.0);
+          transform: scale(1.0);
+        }
+    }
+  </style>
+
 </head>
+
 <body>
 
 
@@ -29,7 +76,7 @@
         <li><%= link_to 'Meine Klassen', user_groups_path(@login_user)%></li>
         <li><%= link_to 'Fördermaterial', materials_path%></li>
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Weiteres Material<span class="caret"></span></a>
+          <a href="#" class="dropdown-toggle disabled" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Weiteres Material<span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><%= link_to 'Elternbrief', asset_path('Elternbrief.docx')%></li>
             <li role="separator" class="divider"></li>
@@ -156,6 +203,73 @@
             levumiPic = dataUri
         });
     }
+
+    var destroyGroup = '<%=@destroyed_group%>'
+    if(destroyGroup){
+        studentsCrypt = JSON.parse(sessionStorage['students']);
+        delete studentsCrypt[destroyGroup];
+        sessionStorage['students'] = JSON.stringify(studentsCrypt);
+    }
+
+    function transfer_data(){
+        $("#transfer").html('    <div id="wait" style="font-size: 20px;margin-top: 1%; text-align: center">' +
+            '        Das Kopieren kann einige Minuten dauern. Bitte lassen Sie das Fenster geöffnet.' +
+            '            <div  class="spinner" style="margin: 30px auto 0">' +
+            '            <div class="bounce1"></div>' +
+            '            <div class="bounce2"></div>' +
+            '            <div class="bounce3"></div>' +
+            '            </div>' +
+            '            </div>');
+        var students = JSON.parse(sessionStorage['students']);
+        Object.keys(students).forEach(function(keyGroup) {
+            var key = createKey();
+            students[keyGroup]['key'] = encrypt_key(key);
+            students[keyGroup]['token'] = generate_token(key);
+            students[keyGroup]['students'] = {};
+            Object.keys(students[keyGroup]).forEach(function(keyStudent) {
+                if(keyStudent!='key' && keyStudent!='students'&&keyStudent!='token'){
+                    students[keyGroup]['students'][keyStudent] = encrypt(students[keyGroup][keyStudent], key);
+                    delete students[keyGroup][keyStudent];
+                }
+            });
+        });
+        students = JSON.stringify(students);
+        var key = createKey();
+        var test_klasse = JSON.stringify({'key': encrypt_key(key), 'token': generate_token(key)});
+        $.ajax({
+            type: 'POST',
+            url:'<%= transfer_data_url %>',
+            data:{'data':students, 'test_klasse': test_klasse},
+            success: function(){
+                console.log("data send")
+            },
+            error: function(){
+                console.log("error")
+            }
+        })
+    }
+    function createKey() {
+        return Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 6);
+
+    }
+
+    function generate_token(key) {
+        return sjcl.encrypt(key, key)
+    }
+
+
+    //Verschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey" und dem Key der Gruppe.
+    function encrypt(text, key) {
+        //var tempkey = sjcl.decrypt(sessionStorage['encryptKey'], key);
+        return sjcl.encrypt(key, text);
+    }
+
+
+    //Verschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey".
+    function encrypt_key(text) {
+        return sjcl.encrypt(sessionStorage['encryptKey'], text);
+    }
+
 </script>
 
 <div class="container-fluid">
@@ -168,6 +282,27 @@
           </div>
       <% end %>
     </div>
+
+    <% if @login_user.account_type == 2 %>
+      <p class='lead'>
+        Es gibt eine neue Version von Levumi (www.levumi.de). Nur dort können Sie zukünftig weiter Messungen durchführen. Bitte legen Sie sich dort einen neuen Zugang an, wenn Sie Levumi weiterhin nutzen möchten!
+      </p>
+    <% else %>
+      <% if @login_user.hasCapability?('transfer') && (@login_user.transferred.nil?|| !@login_user.transferred) %>
+        <div id="transfer">
+          <p class='lead'>
+            Es gibt eine neue Version von Levumi. Nur dort können Sie zukünftig weiter Messungen durchführen. Um Ihren Zugang und Ihre Daten zu übertragen, folgen Sie bitte diesen Schritten:<br/>
+            1. Überprüfen Sie, was Sie umziehen: Es werden Ihre Nutzerdaten und alle aktuellen (nicht archivierten) Klassen, Schüler*innen und allen aktuellen Testversionen umgezogen. Ihre Testklasse wird nicht umgezogen.<br/>
+            2. Klicken Sie unten auf "Daten übertragen" und warten Sie, bis Sie eine Erfolgsmeldung sehen. <br/>
+            3. Loggen Sie sich mit ihren alten Nutzerdaten im neuen System (www.levumi.de) ein und überprüfen Sie dort, ob alles geklappt hat. <br/>
+            <br/>
+            Bei Problemen kontaktieren Sie uns. Ihre Daten werden kopiert und bleiben im alten System noch einige Zeit für Sie verfügbar bis dieses abgeschaltet wird. <br/>
+          </p>
+          <button class="btn btn-block btn-primary" style ="font-size:20px" onclick="transfer_data()">Daten übertragen!</button>
+        </div>
+        <br/>
+      <% end %>
+    <% end %>
     <%= yield %>
   </div>
 </div>

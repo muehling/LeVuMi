@@ -116,12 +116,10 @@ class ApplicationController < ActionController::Base
     students_transfer = {}
     assessments_transfer = {}
     groups = @login_user.groups.where('(archive IS NULL OR archive = false) AND name != "Testklasse"')
-    groups_transfer[-1] = {label: 'Testklasse', key:test_klasse['key'], auth_token: test_klasse['token']}
+    groups_transfer[-1] = {label: 'Beispielklasse', key:test_klasse['key'], auth_token: test_klasse['token']}
     groups.each do |g|
       if !g.demo
         groups_transfer[g.id] = {label: g.name, key: client_data[g.id.to_s]['key'], auth_token: client_data[g.id.to_s]['token']}
-        students_transfer[g.id] = {}
-        assessments_transfer[g.id] = {}
       end
     end
     data_to_transfer[:groups] = groups_transfer
@@ -1033,16 +1031,16 @@ class ApplicationController < ActionController::Base
             coherence = '<strong>Anzahl richtig gelöster Items:</strong> '+coh_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+coh_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+coh_fal.to_s+'<br/><strong>Falsch gelöste Items:</strong><br/>'+coh_fal_items
             complex_structure = '<strong>Anzahl richtig gelöster Items:</strong> '+complex_str_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+complex_str_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+complex_str_fal.to_s+'<br/><strong>Falsch gelöste Items:</strong><br/>'+complex_str_fal_items
             inferenz = '<strong>Anzahl richtig gelöster Items:</strong> '+inf_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+inf_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+inf_fal.to_s+'<br/><strong>Falsch gelöste Items:</strong><br/>'+inf_fal_items
-            results = {'V1': sum, 'V2': {'RI':''+sum.to_s + ' von 93', 'KOMS': complex_structure, 'INF': inferenz, 'KO': coherence, 'LG': r.total, 'LGM': "-"},'V3': {'SUM':sum ,'RI':''+sum.to_s + ' von 93', 'KOMS': complex_structure, 'INF': inferenz, 'KO': coherence, 'LG': r.total, 'LGM': "-"} }
+            results = {'V1': sum, 'V2': {'RI':''+sum.to_s + ' von 93', 'KOMS': complex_structure, 'INF': inferenz, 'KO': coherence, 'LG': (r.total*100).round(2), 'LGM': "-"},'V3': {'SUM':sum ,'RI':''+sum.to_s + ' von 93', 'KOMS': complex_structure, 'INF': inferenz, 'KO': coherence, 'LG': (r.total*100).round(2), 'LGM': "-"} }
           elsif r.measurement.assessment.test.shorthand == "SEL4"
             ada = '<strong>Anzahl richtig gelöster Items:</strong> '+ada_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+ada_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+ada_fal.to_s+'<br/><strong>Falsch gelöste Items:</strong><br/>'+ada_fal_items
             avp = '<strong>Anzahl richtig gelöster Items:</strong> '+avp_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+avp_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+avp_fal.to_s+'<br/><strong>Falsch gelöste Items:</strong><br/>'+avp_fal_items
             avk = '<strong>Anzahl richtig gelöster Items:</strong> '+avk_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+avk_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+avk_fal.to_s+'<br/><strong>Falsch gelöste Items:</strong><br/>'+avk_fal_items
-            results = {'V1': sum, 'V2': {'RI':''+sum.to_s + ' von 60', 'ADA': ada, 'AVP': avp, 'AVK': avk, 'LG': r.total, 'LGM': "-"},'V3': {'SUM':sum ,'RI':''+sum.to_s + ' von 60', 'ADA': ada, 'AVP': avp, 'AVK': avk, 'LG': r.total, 'LGM': "-"} }
+            results = {'V1': sum, 'V2': {'RI':''+sum.to_s + ' von 60', 'ADA': ada, 'AVP': avp, 'AVK': avk, 'LG': (r.total*100).round(2), 'LGM': "-"},'V3': {'SUM':sum ,'RI':''+sum.to_s + ' von 60', 'ADA': ada, 'AVP': avp, 'AVK': avk, 'LG': (r.total*100).round(2), 'LGM': "-"} }
           elsif r.measurement.assessment.test.shorthand == "SEL2"
             ada = '<strong>Anzahl richtig gelöster Items:</strong> '+ada_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+ada_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+ada_fal.to_s+'<br/><strong>Falsch gelöste Items:</strong><br/>'+ada_fal_items
             avp = '<strong>Anzahl richtig gelöster Items:</strong> '+avp_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+avp_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+avp_fal.to_s+'<br/><strong>Falsch gelöste Items:</strong><br/>'+avp_fal_items
-            results = {'V1': sum, 'V2': {'RI':''+sum.to_s + ' von 66', 'ADA': ada, 'AVP': avp, 'LG': r.total, 'LGM': "-"},'V3': {'SUM':sum ,'RI':''+sum.to_s + ' von 66', 'ADA': ada, 'AVP': avp, 'LG': r.total, 'LGM': "-"} }
+            results = {'V1': sum, 'V2': {'RI':''+sum.to_s + ' von 66', 'ADA': ada, 'AVP': avp, 'LG': (r.total*100).round(2), 'LGM': "-"},'V3': {'SUM':sum ,'RI':''+sum.to_s + ' von 66', 'ADA': ada, 'AVP': avp, 'LG': (r.total*100).round(2), 'LGM': "-"} }
           elsif r.measurement.assessment.test.shorthand == "TS0"
             results = {'V1': 1 }
             p_item = ["I1"]
@@ -1050,7 +1048,7 @@ class ApplicationController < ActionController::Base
           else
             correct = '<strong>Anzahl richtig gelöster Items:</strong> '+sum.to_s+'<hr style="margin-top:0; margin-bottom:0"/>'+correct_items
             wrong = '<strong>Anzahl falsch gelöster Items:</strong> '+n_sum.to_s+'<hr style="margin-top:0; margin-bottom:0"/>'+false_items
-            results = {'V1': sum, 'V2': {'RGI': correct, 'FGI': wrong, 'LG': r.total, 'LGM': "-"},'V3': {'SUM':sum ,'RGI': correct, 'FGI': wrong, 'LG': r.total, 'LGM': "-"} }
+            results = {'V1': sum, 'V2': {'RGI': correct, 'FGI': wrong, 'LG': (r.total*100).round(2), 'LGM': "-"},'V3': {'SUM':sum ,'RGI': correct, 'FGI': wrong, 'LG': (r.total*100).round(2), 'LGM': "-"} }
           end
           report[:positive] = p_items
           report[:negative] = n_items
@@ -1065,7 +1063,7 @@ class ApplicationController < ActionController::Base
 
 
     #send data to new Levumi
-    uri = URI.parse('https://www.levumi.de:4433/import')
+    uri = URI.parse('https://www.levumi.de/import')
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     request = Net::HTTP::Post.new(uri.request_uri, initheader = {'Content-Type' =>'application/json'})
@@ -1080,14 +1078,11 @@ class ApplicationController < ActionController::Base
     if response['status']
       @login_user.transferred = true
       @login_user.save
-      @login_user = nil
-      session.delete(:user_id)
-      redirect_to 'https://www.levumi.de:4433/start'
 
-      #flash[:notice] = 'Ihre Daten wurden erfolgreich übertragen. Viel Spaß bei der Benutzung von Levumi 2.0!'
-      #respond_to do |format|
-      #  format.js   {}
-      #end
+      flash[:notice] = 'Ihre Daten wurden übertragen! Bitte loggen Sie sich jetzt in der neuen Version (<a href="https://www.levumi.de">www.levumi.de</a>) ein und überprüfen Sie ob alles geklappt hat.'
+      respond_to do |format|
+        format.js   {}
+      end
     end
   end
 

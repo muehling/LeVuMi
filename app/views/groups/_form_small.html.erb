@@ -11,8 +11,10 @@
       <%= f.submit :class => "btn btn-primary" %>
       <button type="button" class="btn btn-default" onclick="cancelForm()">Abbrechen</button>
     </div>
-    <%= link_to user_group_path(@user, @group), :title => "Klasse löschen", :method => :delete, :data => {:confirm => "Sind Sie sicher?"}, :class => "btn btn-danger" do %>
-        Klasse löschen
+    <% if @user.transferred != true %>
+      <%= link_to user_group_path(@user, @group), :title => "Klasse löschen", :method => :delete, :data => {:confirm => "Sind Sie sicher?"}, :class => "btn btn-danger" do %>
+          Klasse löschen
+      <% end %>
     <% end %>
 
 <% end %>
